@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Story App</string>
+    <string name="password_below_8_chars">your password is under 8 chars limit</string>
+</resources>
