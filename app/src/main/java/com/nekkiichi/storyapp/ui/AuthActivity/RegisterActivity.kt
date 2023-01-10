@@ -6,7 +6,9 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.nekkiichi.storyapp.R
 import com.nekkiichi.storyapp.databinding.ActivityRegisterBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
     private val viewModel: AuthViewModel by viewModels()

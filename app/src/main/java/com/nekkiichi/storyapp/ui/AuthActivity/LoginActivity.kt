@@ -5,7 +5,9 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.nekkiichi.storyapp.databinding.ActivityLoginBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
     private val viewModel:AuthViewModel by viewModels()
@@ -22,6 +24,9 @@ class LoginActivity : AppCompatActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             startActivity(intent)
         }
+        binding.btnLogin.setOnClickListener {
+            //TODO: Add Loading State and intent listener to main app
+            viewModel.logIn(binding.edLoginEmail.text.toString(), binding.edLoginPassword.text.toString())
+        }
     }
-
 }
