@@ -3,14 +3,12 @@ package com.nekkiichi.storyapp.ui
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
-import android.text.method.PasswordTransformationMethod
 import android.util.AttributeSet
-import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.AppCompatEditText
 import com.nekkiichi.storyapp.R
 
-class EditTextPassword: AppCompatEditText{
-    var isInputValid = true
+class EditTextEmail: AppCompatEditText {
+    var isValid = true
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -18,30 +16,29 @@ class EditTextPassword: AppCompatEditText{
         attrs,
         defStyleAttr
     )
+
     init {
-        inputType = EditorInfo.TYPE_TEXT_VARIATION_PASSWORD
-        transformationMethod = PasswordTransformationMethod()
-        addTextChangedListener (object : TextWatcher {
+        addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //do nothing
+                //Do Nothing
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                isInputValid = s.toString().length >= 8
+                isValid = s?.let { android.util.Patterns.EMAIL_ADDRESS.matcher(it).matches() }?: false
                 doValidate()
             }
 
             override fun afterTextChanged(s: Editable?) {
-                //do nothing
+                //Do Nothing
             }
 
         })
     }
-
     private fun doValidate() {
-        error = if(isInputValid) {
+        error = if(isValid) {
             null
         }else {
-            resources.getString(R.string.password_invalid)
+            resources.getString(R.string.email_invalid)
         }
     }
 }
