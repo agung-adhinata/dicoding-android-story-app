@@ -7,4 +7,6 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="create_account">Create Account</string>
+    <string name="your_full_name">Your Full Name</string>
+    <string name="back_to_login">Back to Login</string>
 </resources>
