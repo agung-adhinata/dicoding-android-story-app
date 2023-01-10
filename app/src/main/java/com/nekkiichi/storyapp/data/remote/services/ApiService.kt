@@ -1,8 +1,9 @@
 package com.nekkiichi.storyapp.data.remote.services
 
 import com.nekkiichi.storyapp.data.remote.response.BasicResponse
-import com.nekkiichi.storyapp.data.remote.response.FullLoginResponse
-import retrofit2.http.Header
+import com.nekkiichi.storyapp.data.remote.response.FullAuthResponse
+import com.nekkiichi.storyapp.data.remote.response.ListStoryResponse
+import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 import java.io.File
@@ -24,11 +25,17 @@ interface ApiService {
         email: String,
         @Query("password")
         password: String
-    ): FullLoginResponse
+    ): FullAuthResponse
 
     @POST("/stories")
     suspend fun sendStory(
         @Query("description") description: String,
         @Query("photo") photo: File,
     ): BasicResponse
+
+    @GET("/stories")
+    suspend fun getAllStories(
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ): ListStoryResponse
 }

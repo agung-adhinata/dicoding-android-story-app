@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 data class ListStoryResponse (
     @SerializedName("error") var error: Boolean? = null,
     @SerializedName("message") var message: String? = null,
-
+    @SerializedName("listStory") var listStory: ListStoryItemResponse? = null
         ):Parcelable
 @Parcelize
 data class ListStoryItemResponse (
