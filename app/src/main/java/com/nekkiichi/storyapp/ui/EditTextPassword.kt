@@ -11,7 +11,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.AppCompatEditText
 import com.nekkiichi.storyapp.R
 
-class EditTextPassword: AppCompatEditText, View.OnTouchListener {
+class EditTextPassword: AppCompatEditText{
     var isInputValid = true
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -21,10 +21,8 @@ class EditTextPassword: AppCompatEditText, View.OnTouchListener {
         defStyleAttr
     )
     init {
-        hint = "password"
         inputType = EditorInfo.TYPE_TEXT_VARIATION_PASSWORD
         transformationMethod = PasswordTransformationMethod()
-        setOnTouchListener(this)
         addTextChangedListener (object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 //do nothing
@@ -48,9 +46,4 @@ class EditTextPassword: AppCompatEditText, View.OnTouchListener {
             error = resources.getString(R.string.password_below_8_chars)
         }
     }
-
-    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        return false
-    }
-
 }
