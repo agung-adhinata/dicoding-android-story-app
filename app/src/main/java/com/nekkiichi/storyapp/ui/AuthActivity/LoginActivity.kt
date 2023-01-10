@@ -1,5 +1,6 @@
 package com.nekkiichi.storyapp.ui.AuthActivity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -15,5 +16,12 @@ class LoginActivity : AppCompatActivity() {
         //setup binding
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.btnToRegister.setOnClickListener {
+            val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+            startActivity(intent)
+        }
     }
+
 }

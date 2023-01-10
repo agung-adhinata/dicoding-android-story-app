@@ -12,7 +12,7 @@
         android:theme="@style/Theme.StoryApp"
         tools:targetApi="31">
         <activity
-            android:name=".RegisterActivity"
+            android:name=".ui.AuthActivity.RegisterActivity"
             android:exported="false" />
         <activity
             android:name=".ui.AuthActivity.LoginActivity"
