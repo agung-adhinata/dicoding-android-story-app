@@ -7,7 +7,7 @@
     android:padding="24dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.AuthActivity.RegisterActivity">
+    tools:context=".ui.authActivity.RegisterActivity">
     <TextView
         android:paddingTop="24dp"
         android:layout_width="match_parent"

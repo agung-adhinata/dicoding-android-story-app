@@ -1,4 +1,4 @@
-package com.nekkiichi.storyapp.ui.AuthActivity
+package com.nekkiichi.storyapp.ui.authActivity
 
 import android.content.Intent
 import android.os.Bundle

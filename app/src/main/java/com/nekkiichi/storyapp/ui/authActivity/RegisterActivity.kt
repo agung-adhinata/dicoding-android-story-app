@@ -1,10 +1,9 @@
-package com.nekkiichi.storyapp.ui.AuthActivity
+package com.nekkiichi.storyapp.ui.authActivity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import com.nekkiichi.storyapp.R
 import com.nekkiichi.storyapp.databinding.ActivityRegisterBinding
 import dagger.hilt.android.AndroidEntryPoint
 
