@@ -8,7 +8,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import com.nekkiichi.storyapp.R
 
 class EditTextEmail: AppCompatEditText {
-    var isValid = true
+    var isInputValid = true
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -24,7 +24,7 @@ class EditTextEmail: AppCompatEditText {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                isValid = s?.let { android.util.Patterns.EMAIL_ADDRESS.matcher(it).matches() }?: false
+                isInputValid = s?.let { android.util.Patterns.EMAIL_ADDRESS.matcher(it).matches() }?: false
                 doValidate()
             }
 
@@ -35,7 +35,7 @@ class EditTextEmail: AppCompatEditText {
         })
     }
     private fun doValidate() {
-        error = if(isValid) {
+        error = if(isInputValid) {
             null
         }else {
             resources.getString(R.string.email_invalid)
