@@ -1,7 +1,8 @@
-package com.nekkiichi.storyapp.ui.authActivity
+package com.nekkiichi.storyapp.ui.authView
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nekkiichi.storyapp.data.AppPreferences
 import com.nekkiichi.storyapp.data.ResponseStatus
 import com.nekkiichi.storyapp.data.StoryRepository
 import com.nekkiichi.storyapp.data.remote.response.BasicResponse
@@ -13,16 +14,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(private val repository: StoryRepository):ViewModel() {
+class AuthViewModel @Inject constructor(private val repository: StoryRepository, private val preferences: AppPreferences):ViewModel() {
     private val _session = MutableStateFlow<ResponseStatus<FullAuthResponse>>(ResponseStatus.init)
     val session = _session.asStateFlow()
     private val _registerResponse = MutableStateFlow<ResponseStatus<BasicResponse>>(ResponseStatus.init)
     val registerResponse = _registerResponse.asStateFlow()
     fun logIn(email: String, password: String) {
         viewModelScope.launch {
-
             repository.requestLogin(email,password).collect{
                 _session.value = it
+                listenSession(it)
             }
         }
     }
@@ -31,6 +32,16 @@ class AuthViewModel @Inject constructor(private val repository: StoryRepository)
             repository.requestRegister(name,email,password).collect{
                 _registerResponse.value = it
             }
+        }
+    }
+    private fun listenSession(response: ResponseStatus<FullAuthResponse>) {
+        when(response) {
+            is ResponseStatus.Success-> {
+                viewModelScope.launch{
+                    preferences.saveSession(response.data.loginResult.userId,response.data.loginResult.name, response.data.loginResult.tokenId)
+                }
+            }
+            else -> {}
         }
     }
 
