@@ -6,9 +6,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AuthResponse (
-    @SerializedName("userId") var userId: String? = null,
-    @SerializedName("name") var name: String? = null,
-    @SerializedName("tokenId") var tokenId: String? = null
+    @SerializedName("userId") var userId: String,
+    @SerializedName("name") var name: String,
+    @SerializedName("tokenId") var tokenId: String
         ) : Parcelable
 
 /**
@@ -18,5 +18,5 @@ data class AuthResponse (
 data class FullAuthResponse (
     @SerializedName("error") var error: Boolean? = null,
     @SerializedName("message") var message: String? = null,
-    @SerializedName("loginResult") var loginResult: AuthResponse? = null
+    @SerializedName("loginResult") var loginResult: AuthResponse
         ): Parcelable
