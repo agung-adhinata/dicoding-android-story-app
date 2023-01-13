@@ -12,9 +12,9 @@ data class ListStoryResponse (
         ):Parcelable
 @Parcelize
 data class ListStoryItemResponse (
-    @SerializedName("id") var id: String? = null,
-    @SerializedName("name") var name: String? = null,
-    @SerializedName("description") var description: String? = null,
-    @SerializedName("photoUrl") var photoUrl: String? = null,
-    @SerializedName("createdAt") var createdAt: String? = null,
+    @SerializedName("id") var id: String,
+    @SerializedName("name") var name: String,
+    @SerializedName("description") var description: String,
+    @SerializedName("photoUrl") var photoUrl: String,
+    @SerializedName("createdAt") var createdAt: String,
         ):Parcelable

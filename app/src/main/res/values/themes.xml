@@ -12,5 +12,13 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        
+    </style>
+    <style name="CircularCorner">
+        <item name="cornerSize">50%</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
+    <style name="StoryListItem">
+        <item name="background">@android:color/darker_gray</item>
     </style>
 </resources>

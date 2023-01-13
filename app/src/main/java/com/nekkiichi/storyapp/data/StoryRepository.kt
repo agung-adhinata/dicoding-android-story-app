@@ -8,6 +8,12 @@ import com.nekkiichi.storyapp.data.remote.response.ListStoryResponse
 import com.nekkiichi.storyapp.data.remote.services.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.xml.sax.DTDHandler
+import java.io.File
 import javax.inject.Inject
 
 class StoryRepository @Inject constructor(
@@ -51,6 +57,30 @@ class StoryRepository @Inject constructor(
         emit(ResponseStatus.loading)
         try {
             val res = apiService.getAllStories(token, 10, 10)
+            if (res.error == false) {
+                emit(ResponseStatus.Success(res))
+            } else {
+                Log.d(TAG, "Server Error, ${res.message}")
+                emit(ResponseStatus.Error(res.message.toString()))
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "Error when request register, ${e.message}")
+            emit(ResponseStatus.Error(e.message.toString()))
+        }
+    }
+
+    fun uploadStory(file: File, description: String): Flow<ResponseStatus<BasicResponse>> = flow {
+        val token = "Bearer ${preferences.getToken()}"
+        emit(ResponseStatus.loading)
+        try {
+            val desc = description.toRequestBody("text/plain".toMediaType())
+            val requestMediaFile = file.asRequestBody("image/jpeg".toMediaType())
+            val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+                "photo",
+                file.name,
+                requestMediaFile
+            )
+            val res = apiService.sendStory(token,desc,imageMultipart)
             if (res.error == false) {
                 emit(ResponseStatus.Success(res))
             } else {

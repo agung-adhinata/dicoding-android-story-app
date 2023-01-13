@@ -4,10 +4,14 @@ import com.nekkiichi.storyapp.data.remote.request.Register
 import com.nekkiichi.storyapp.data.remote.response.BasicResponse
 import com.nekkiichi.storyapp.data.remote.response.FullAuthResponse
 import com.nekkiichi.storyapp.data.remote.response.ListStoryResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 import java.io.File
 
@@ -26,11 +30,12 @@ interface ApiService {
         password: String
     ): FullAuthResponse
 
+    @Multipart
     @POST("stories")
     suspend fun sendStory(
         @Header("Authorization") tokenWithBeaver: String,
-        @Body description: String,
-        @Query("photo") photo: File,
+        @Part("description") description: RequestBody,
+        @Part photo: MultipartBody.Part,
     ): BasicResponse
 
     @GET("stories")
