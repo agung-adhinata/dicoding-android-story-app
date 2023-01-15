@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".ui.view.addStory.AddStoryActivity">
+    <ImageView
+        android:id="@+id/iv_photo"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:contentDescription="@string/taken_image" />
+    <Button
+        android:id="@+id/btn_open_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/open_camera" />
+
+    <Button
+        android:id="@+id/btn_open_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/open_gallery" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/description" />
+
+    <EditText
+        android:id="@+id/ed_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:hint="@string/example_description"
+        android:inputType="text"
+        android:minHeight="48dp" />
+</LinearLayout>
