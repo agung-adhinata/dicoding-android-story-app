@@ -1,5 +1,6 @@
 package com.nekkiichi.storyapp.data.remote.services
 
+import com.nekkiichi.storyapp.data.remote.request.Login
 import com.nekkiichi.storyapp.data.remote.request.Register
 import com.nekkiichi.storyapp.data.remote.response.BasicResponse
 import com.nekkiichi.storyapp.data.remote.response.FullAuthResponse
@@ -24,10 +25,7 @@ interface ApiService {
 
     @POST("login")
     suspend fun sendLogin(
-        @Query("email")
-        email: String,
-        @Query("password")
-        password: String
+        @Body login: Login
     ): FullAuthResponse
 
     @Multipart
@@ -41,7 +39,7 @@ interface ApiService {
     @GET("stories")
     suspend fun getAllStories(
         @Header("Authorization") tokenWithBeaver: String,
-        @Query("page") page: Int,
-        @Query("size") size: Int
+        @Header("page") page: Int,
+        @Header("size") size: Int
     ): ListStoryResponse
 }
