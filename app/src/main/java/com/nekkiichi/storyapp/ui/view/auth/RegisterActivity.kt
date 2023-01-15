@@ -1,10 +1,10 @@
-package com.nekkiichi.storyapp.ui.authView
+package com.nekkiichi.storyapp.ui.view.auth
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -29,10 +29,9 @@ class RegisterActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                viewModel.registerResponse.collect {
-                    collectRegisterState(it)
-                }
-
+                    viewModel.registerResponse.collect {
+                        collectRegisterState(it)
+                    }
                 }
             }
         }
@@ -42,8 +41,12 @@ class RegisterActivity : AppCompatActivity() {
             startActivity(intent)
         }
         binding.btnRegister.setOnClickListener {
-            if(isInputValid()) {
-                viewModel.createNewAccount(binding.edRegisterName.text.toString(), binding.edRegisterEmail.text.toString(), binding.edRegisterPassword.text.toString())
+            if (isInputValid()) {
+                viewModel.createNewAccount(
+                    binding.edRegisterName.text.toString(),
+                    binding.edRegisterEmail.text.toString(),
+                    binding.edRegisterPassword.text.toString()
+                )
             }
         }
     }
@@ -52,22 +55,29 @@ class RegisterActivity : AppCompatActivity() {
         when (response) {
             is ResponseStatus.loading -> showLoading(true)
             is ResponseStatus.Error -> {
-                showLoading(true)
-                Toast.makeText(this, "Error Retrieve data, ${response.error}", Toast.LENGTH_SHORT).show()
+                showLoading(false)
+                Toast.makeText(this, "Error Retrieve data, ${response.error}", Toast.LENGTH_SHORT)
+                    .show()
             }
-            is ResponseStatus.Success ->{
-                showLoading(true)
+            is ResponseStatus.Success -> {
+                showLoading(false)
                 Toast.makeText(this, "Done, ${response.data.message}", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+                startActivity(intent)
             }
-            else-> {}
+            else -> {}
         }
     }
+
     private fun showLoading(status: Boolean) {
 
     }
-    private fun isInputValid():Boolean {
+
+    private fun isInputValid(): Boolean {
         return binding.edRegisterName.text != null && binding.edRegisterEmail.isInputValid && binding.edRegisterPassword.isInputValid
     }
+
     companion object {
         val TAG = this::class.java.simpleName.toString()
     }
