@@ -14,4 +14,7 @@
     <string name="taken_image">Taken Image</string>
     <string name="description">Description</string>
     <string name="example_description">eg: Chiken Rosetta</string>
+    <string name="placeholder_name">Owner Name</string>
+    <string name="placeholder_description">content description</string>
+    <string name="placeholder_content_img">content image</string>
 </resources>
