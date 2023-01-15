@@ -1,5 +1,6 @@
-package com.nekkiichi.storyapp.ui.authView
+package com.nekkiichi.storyapp.ui.view.auth
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nekkiichi.storyapp.data.AppPreferences
@@ -23,7 +24,16 @@ class AuthViewModel @Inject constructor(private val repository: StoryRepository,
         viewModelScope.launch {
             repository.requestLogin(email,password).collect{
                 _session.value = it
-                listenSession(it)
+                when(it) {
+                    is ResponseStatus.Success-> {
+                        val data = it.data.loginResult
+                        Log.d(TAG, "data received: ${data}")
+                        if(data!= null) {
+                        updateSession(data.userId, data.name, data.token)
+                        }
+                    }
+                    else-> {}
+                }
             }
         }
     }
@@ -31,18 +41,16 @@ class AuthViewModel @Inject constructor(private val repository: StoryRepository,
         viewModelScope.launch {
             repository.requestRegister(name,email,password).collect{
                 _registerResponse.value = it
-            }
-        }
-    }
-    private fun listenSession(response: ResponseStatus<FullAuthResponse>) {
-        when(response) {
-            is ResponseStatus.Success-> {
-                viewModelScope.launch{
-                    preferences.saveSession(response.data.loginResult.userId,response.data.loginResult.name, response.data.loginResult.tokenId)
-                }
-            }
-            else -> {}
-        }
-    }
 
+            }
+        }
+    }
+    fun updateSession(userId: String, name: String, token: String) {
+        viewModelScope.launch {
+            preferences.saveSession(userId, name, token)
+        }
+    }
+    companion object {
+        val TAG = this::class.java.simpleName
+    }
 }

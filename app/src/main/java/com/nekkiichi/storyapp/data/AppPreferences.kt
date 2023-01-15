@@ -1,5 +1,6 @@
 package com.nekkiichi.storyapp.data
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.map
 
 class AppPreferences constructor(private val dataStore: DataStore<Preferences>) {
     suspend fun saveSession(userId: String, name: String, tokenId: String) {
+        Log.d(TAG,"session saved")
         dataStore.edit {
             it[TOKEN_KEY] = tokenId
             it[USER_NAME] = name
@@ -41,5 +43,6 @@ class AppPreferences constructor(private val dataStore: DataStore<Preferences>) 
         val TOKEN_KEY = stringPreferencesKey("auth_token_key")
         val USER_NAME = stringPreferencesKey("auth_user_name")
         val USER_ID = stringPreferencesKey("auth_user_id")
+        val TAG = this::class.java.simpleName.toString()
     }
 }
