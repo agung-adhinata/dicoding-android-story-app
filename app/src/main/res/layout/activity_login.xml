@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp"
-    tools:context=".ui.authView.LoginActivity">
+    tools:context=".ui.view.auth.LoginActivity">
     <TextView
         android:paddingTop="24dp"
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         android:text="@string/log_in"
         style="@style/TextAppearance.MaterialComponents.Headline4"
         />
-    <com.nekkiichi.storyapp.ui.EditTextEmail
+    <com.nekkiichi.storyapp.ui.component.EditTextEmail
         android:layout_marginTop="24dp"
         android:id="@+id/ed_login_email"
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
         android:inputType="textEmailAddress"
         android:maxLines="1"
         android:minHeight="48dp" />
-    <com.nekkiichi.storyapp.ui.EditTextPassword
+    <com.nekkiichi.storyapp.ui.component.EditTextPassword
         android:id="@+id/ed_login_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
