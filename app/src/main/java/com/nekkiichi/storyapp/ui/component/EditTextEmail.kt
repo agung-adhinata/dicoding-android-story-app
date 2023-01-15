@@ -1,4 +1,4 @@
-package com.nekkiichi.storyapp.ui
+package com.nekkiichi.storyapp.ui.component
 
 import android.content.Context
 import android.text.Editable
