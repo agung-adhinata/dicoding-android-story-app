@@ -9,4 +9,9 @@
     <string name="back_to_login">Back to Login</string>
     <string name="email_invalid">Email is not matches</string>
     <string name="password_invalid">your password is under 8 chars limit</string>
+    <string name="open_camera">Open Camera</string>
+    <string name="open_gallery">Open Gallery</string>
+    <string name="taken_image">Taken Image</string>
+    <string name="description">Description</string>
+    <string name="example_description">eg: Chiken Rosetta</string>
 </resources>
