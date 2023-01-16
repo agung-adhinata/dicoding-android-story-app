@@ -17,4 +17,5 @@
     <string name="placeholder_name">Owner Name</string>
     <string name="placeholder_description">content description</string>
     <string name="placeholder_content_img">content image</string>
+    <string name="add_new_story">Add New Story</string>
 </resources>
