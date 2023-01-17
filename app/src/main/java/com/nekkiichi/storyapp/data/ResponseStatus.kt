@@ -5,4 +5,5 @@ sealed class ResponseStatus<out R> private constructor(){
     data class Error(val error: String): ResponseStatus<Nothing>()
     object loading: ResponseStatus<Nothing>()
     object init: ResponseStatus<Nothing>()
+    object TokenInvalid: ResponseStatus<Nothing>()
 }
