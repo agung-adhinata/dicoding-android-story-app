@@ -17,12 +17,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val repository: StoryRepository, private val preferences: AppPreferences):ViewModel() {
     private val _storyLists = MutableStateFlow<ResponseStatus<ListStoryResponse>>(ResponseStatus.loading)
     val storyList = _storyLists.asStateFlow()
-    val debugData = MutableLiveData<String>("")
-
-    init {
-        showAppPreferencesKey()
-        getALlStories()
-    }
+    val prevStoryList = MutableStateFlow<ListStoryResponse?>(null)
     fun getALlStories() {
         viewModelScope.launch {
             repository.getAllStories().collect {
@@ -30,11 +25,10 @@ class HomeViewModel @Inject constructor(private val repository: StoryRepository,
             }
         }
     }
-    private fun showAppPreferencesKey() {
+    fun logOut() {
         viewModelScope.launch {
-            preferences.getToken().collect {
-                debugData.value = it
-            }
+            preferences.clearLoginStatus()
+            getALlStories()
         }
     }
 }
