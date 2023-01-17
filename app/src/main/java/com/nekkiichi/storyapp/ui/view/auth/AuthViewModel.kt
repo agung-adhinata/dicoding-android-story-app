@@ -11,6 +11,7 @@ import com.nekkiichi.storyapp.data.remote.response.FullAuthResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,11 +42,10 @@ class AuthViewModel @Inject constructor(private val repository: StoryRepository,
         viewModelScope.launch {
             repository.requestRegister(name,email,password).collect{
                 _registerResponse.value = it
-
             }
         }
     }
-    fun updateSession(userId: String, name: String, token: String) {
+    private fun updateSession(userId: String, name: String, token: String) {
         viewModelScope.launch {
             preferences.saveSession(userId, name, token)
         }

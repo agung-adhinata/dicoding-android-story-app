@@ -1,13 +1,19 @@
 package com.nekkiichi.storyapp.ui.view.auth
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.nekkiichi.storyapp.R
 import com.nekkiichi.storyapp.data.ResponseStatus
 import com.nekkiichi.storyapp.data.remote.response.FullAuthResponse
 import com.nekkiichi.storyapp.databinding.ActivityLoginBinding
@@ -23,7 +29,6 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         //setup binding
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -41,7 +46,12 @@ class LoginActivity : AppCompatActivity() {
         binding.btnToRegister.setOnClickListener {
             val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-            startActivity(intent)
+            val optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                Pair(binding.btnLogin, "confirm"),
+                Pair(binding.btnToRegister, "switch")
+            )
+            startActivity(intent,optionsCompat.toBundle())
         }
         binding.btnLogin.setOnClickListener {
             //TODO: Add Loading State and intent listener to main app
@@ -58,13 +68,20 @@ class LoginActivity : AppCompatActivity() {
             is ResponseStatus.Success -> {
                 showLoading(false)
                 val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
                 startActivity(intent)
             }
             else -> showLoading(false)
         }
     }
     private fun showLoading(bool: Boolean) {
-
+        if(bool) {
+            binding.btnLogin.isEnabled = false
+            binding.btnToRegister.isEnabled = false
+        }else {
+            binding.btnLogin.isEnabled = true
+            binding.btnToRegister.isEnabled = true
+        }
     }
+
+
 }

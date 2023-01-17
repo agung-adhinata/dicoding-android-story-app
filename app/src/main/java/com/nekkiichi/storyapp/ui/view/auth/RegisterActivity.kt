@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -35,10 +37,16 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
         }
+        //setup binding
         binding.btnToLogin.setOnClickListener {
             val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-            startActivity(intent)
+            val optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                Pair(binding.btnRegister, "confirm"),
+                Pair(binding.btnToLogin, "switch")
+            )
+            startActivity(intent, optionsCompat.toBundle())
         }
         binding.btnRegister.setOnClickListener {
             if (isInputValid()) {
@@ -51,7 +59,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    fun collectRegisterState(response: ResponseStatus<BasicResponse>) {
+    private fun collectRegisterState(response: ResponseStatus<BasicResponse>) {
         when (response) {
             is ResponseStatus.loading -> showLoading(true)
             is ResponseStatus.Error -> {
@@ -66,12 +74,18 @@ class RegisterActivity : AppCompatActivity() {
                 intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
                 startActivity(intent)
             }
-            else -> {}
+            else -> showLoading(false)
         }
     }
 
-    private fun showLoading(status: Boolean) {
-
+    private fun showLoading(bool: Boolean) {
+        if (bool) {
+            binding.btnRegister.isEnabled = false
+            binding.btnToLogin.isEnabled = false
+        } else {
+            binding.btnRegister.isEnabled = true
+            binding.btnToLogin.isEnabled = true
+        }
     }
 
     private fun isInputValid(): Boolean {
