@@ -1,6 +1,5 @@
 package com.nekkiichi.storyapp.ui.view.home
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nekkiichi.storyapp.data.AppPreferences
@@ -27,7 +26,7 @@ class HomeViewModel @Inject constructor(private val repository: StoryRepository,
     }
     fun logOut() {
         viewModelScope.launch {
-            preferences.clearLoginStatus()
+            preferences.clearSession()
             getALlStories()
         }
     }

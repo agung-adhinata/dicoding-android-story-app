@@ -26,6 +26,7 @@ class RegisterActivity : AppCompatActivity() {
         //setup binding
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide()
 
         //setup lifecycle
         lifecycleScope.launch {

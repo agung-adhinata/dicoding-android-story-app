@@ -14,7 +14,6 @@ import com.nekkiichi.storyapp.data.remote.response.ListStoryResponse
 import com.nekkiichi.storyapp.ui.view.auth.LoginActivity
 import com.nekkiichi.storyapp.ui.view.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -30,13 +29,13 @@ class StartActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.isLogin.collect {
-                        collectLoginState(it)
+                        collectTokenState(it)
                     }
                 }
             }
         }
     }
-    private fun collectLoginState(data: ResponseStatus<ListStoryResponse>) {
+    private fun collectTokenState(data: ResponseStatus<ListStoryResponse>) {
         when (data) {
             is ResponseStatus.loading ->{
                 Log.d(TAG, "loading state")

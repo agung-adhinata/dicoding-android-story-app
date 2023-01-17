@@ -1,10 +1,8 @@
 package com.nekkiichi.storyapp.ui.view.auth
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,11 +11,12 @@ import androidx.core.util.Pair
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.nekkiichi.storyapp.R
 import com.nekkiichi.storyapp.data.ResponseStatus
 import com.nekkiichi.storyapp.data.remote.response.FullAuthResponse
+import com.nekkiichi.storyapp.data.remote.response.ListStoryResponse
 import com.nekkiichi.storyapp.databinding.ActivityLoginBinding
 import com.nekkiichi.storyapp.ui.view.home.HomeActivity
+import com.nekkiichi.storyapp.ui.view.splash.StartActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -25,19 +24,24 @@ import kotlinx.coroutines.launch
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
     private val viewModel: AuthViewModel by viewModels()
-    private var isLogin = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setup binding
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.session.collect {
+                    viewModel.loginStatus.collect {
                         collectLoginState(it)
+                    }
+                }
+                launch {
+                    viewModel.tokenStatus.collect {
+                        collectTokenState(it)
                     }
                 }
             }
@@ -71,6 +75,25 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             else -> showLoading(false)
+        }
+    }
+    private fun collectTokenState(data: ResponseStatus<ListStoryResponse>) {
+        when (data) {
+            is ResponseStatus.loading ->{
+                Log.d(StartActivity.TAG, "loading state")
+                showLoading(true)
+            }
+            is ResponseStatus.Success -> {
+                showLoading(false)
+                Log.d(StartActivity.TAG, "token valid")
+                val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                startActivity(intent)
+            }
+            else -> {
+                showLoading(false)
+                Toast.makeText(this, "session can't be used due to network issue or session reached it's time limit. please try again", Toast.LENGTH_SHORT).show()
+                Log.d(StartActivity.TAG, "token invalid, enable login activity")
+            }
         }
     }
     private fun showLoading(bool: Boolean) {

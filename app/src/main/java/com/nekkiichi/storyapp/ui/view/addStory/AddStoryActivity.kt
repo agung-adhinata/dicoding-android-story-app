@@ -39,7 +39,6 @@ class AddStoryActivity : AppCompatActivity() {
         if (it.resultCode == RESULT_OK) {
             val myfile = File(currentPhotoPath)
             val result = BitmapFactory.decodeFile(myfile.path)
-//            val imgBitmap = it.data?.extras?.get("data") as Bitmap
             getFile = myfile
             binding.ivPhoto.setImageBitmap(result)
         }

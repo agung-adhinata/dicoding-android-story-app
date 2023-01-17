@@ -48,10 +48,6 @@
             android:noHistory="true" />
         <activity
             android:name=".ui.view.auth.LoginActivity"
-            android:exported="false"
-            android:noHistory="true"/>
-        <activity
-            android:name=".ui.view.splash.StartActivity"
             android:exported="true"
             android:noHistory="true">
             <intent-filter>
@@ -60,6 +56,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.view.splash.StartActivity"
+            android:exported="false"
+            android:noHistory="true"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

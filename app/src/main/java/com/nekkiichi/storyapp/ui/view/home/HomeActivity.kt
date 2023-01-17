@@ -32,7 +32,7 @@ class HomeActivity : AppCompatActivity() {
         //setup binding
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        title = "Home "
+        title = "Home"
         //setup observer
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -69,29 +69,28 @@ class HomeActivity : AppCompatActivity() {
     }
     private fun collectStoryListResponse(status: ResponseStatus<ListStoryResponse>) {
         when(status) {
-            is ResponseStatus.loading-> showLoading(true)
             is ResponseStatus.Error -> {
-                showLoading(false)
                 Toast.makeText(this, "Error fetch data: ${status.error}", Toast.LENGTH_SHORT).show()
             }
             is ResponseStatus.TokenInvalid -> {
-                showLoading(false)
                 Toast.makeText(this, "Logout Successful", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@HomeActivity, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
                 startActivity(intent)
             }
             is ResponseStatus.Success -> {
-                showLoading(false)
                 if(viewModel.prevStoryList.value != status.data) {
                     Log.d(TAG, "Data Updated")
                     viewModel.prevStoryList.value = status.data
                     updateRecycleView(status.data.listStory)
                 }else{
                     Log.d(TAG, "Data Reserved")
+                    if(binding.rvStoryList.adapter == null) {
+                        updateRecycleView(status.data.listStory)
+                    }
                 }
             }
-            else-> showLoading(false)
+            else-> {} //do nothing
         }
     }
     private fun updateRecycleView(data: List<StoryItem>?) {
@@ -105,9 +104,6 @@ class HomeActivity : AppCompatActivity() {
             binding.rvStoryList.adapter = storyListAdapter
             binding.rvStoryList.addItemDecoration(dividerItemDecoration)
         }
-    }
-    fun showLoading(status: Boolean) {
-
     }
     companion object {
         val TAG = this::class.java.simpleName
