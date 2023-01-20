@@ -62,7 +62,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun collectRegisterState(response: ResponseStatus<BasicResponse>) {
         when (response) {
-            is ResponseStatus.loading -> showLoading(true)
+            is ResponseStatus.Loading -> showLoading(true)
             is ResponseStatus.Error -> {
                 showLoading(false)
                 Toast.makeText(this, "Error Retrieve data, ${response.error}", Toast.LENGTH_SHORT)

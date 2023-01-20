@@ -144,7 +144,7 @@ class AddStoryActivity : AppCompatActivity() {
 
     private fun collectUploadStatus(status: ResponseStatus<BasicResponse>) {
         when (status) {
-            is ResponseStatus.loading -> showLoading(true)
+            is ResponseStatus.Loading -> showLoading(true)
             is ResponseStatus.Error -> {
                 showLoading(false)
                 Toast.makeText(this, "error: ${status.error}", Toast.LENGTH_SHORT).show()

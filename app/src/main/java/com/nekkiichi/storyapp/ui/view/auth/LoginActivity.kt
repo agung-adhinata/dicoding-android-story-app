@@ -16,7 +16,6 @@ import com.nekkiichi.storyapp.data.remote.response.FullAuthResponse
 import com.nekkiichi.storyapp.data.remote.response.ListStoryResponse
 import com.nekkiichi.storyapp.databinding.ActivityLoginBinding
 import com.nekkiichi.storyapp.ui.view.home.HomeActivity
-import com.nekkiichi.storyapp.ui.view.splash.StartActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -64,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
     }
     private fun collectLoginState(status: ResponseStatus<FullAuthResponse>) {
         when(status) {
-            is ResponseStatus.loading -> showLoading(true)
+            is ResponseStatus.Loading -> showLoading(true)
             is ResponseStatus.Error -> {
                 showLoading(false)
                 Toast.makeText(this, "Error: ${status.error}", Toast.LENGTH_SHORT).show()
@@ -79,20 +78,23 @@ class LoginActivity : AppCompatActivity() {
     }
     private fun collectTokenState(data: ResponseStatus<ListStoryResponse>) {
         when (data) {
-            is ResponseStatus.loading ->{
-                Log.d(StartActivity.TAG, "loading state")
+            is ResponseStatus.Loading ->{
+                Log.d(TAG, "loading state")
                 showLoading(true)
             }
             is ResponseStatus.Success -> {
                 showLoading(false)
-                Log.d(StartActivity.TAG, "token valid")
+                Log.d(TAG, "token valid")
                 val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                 startActivity(intent)
             }
+            is ResponseStatus.TokenInvalid -> {
+                showLoading(false)
+                Toast.makeText(this, "Error: session invalid", Toast.LENGTH_SHORT).show()
+            }
             else -> {
                 showLoading(false)
-                Toast.makeText(this, "session can't be used due to network issue or session reached it's time limit. please try again", Toast.LENGTH_SHORT).show()
-                Log.d(StartActivity.TAG, "token invalid, enable login activity")
+                Log.d(TAG, "token invalid, enable login activity")
             }
         }
     }
@@ -105,6 +107,8 @@ class LoginActivity : AppCompatActivity() {
             binding.btnToRegister.isEnabled = true
         }
     }
-
+    companion object {
+        val TAG = "LoginActivity"
+    }
 
 }

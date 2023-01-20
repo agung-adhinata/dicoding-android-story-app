@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: StoryRepository, private val preferences: AppPreferences):ViewModel() {
-    private val _storyLists = MutableStateFlow<ResponseStatus<ListStoryResponse>>(ResponseStatus.loading)
+    private val _storyLists = MutableStateFlow<ResponseStatus<ListStoryResponse>>(ResponseStatus.Loading)
     val storyList = _storyLists.asStateFlow()
     val prevStoryList = MutableStateFlow<ListStoryResponse?>(null)
     fun getALlStories() {

@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddStoryViewModel @Inject constructor(private val repository: StoryRepository, private val preferences: AppPreferences): ViewModel() {
-    private var _status = MutableStateFlow<ResponseStatus<BasicResponse>>(ResponseStatus.init)
+    private var _status = MutableStateFlow<ResponseStatus<BasicResponse>>(ResponseStatus.Init)
     val status = _status.asStateFlow()
     fun uploadImage(file: File, description: String) {
         viewModelScope.launch {

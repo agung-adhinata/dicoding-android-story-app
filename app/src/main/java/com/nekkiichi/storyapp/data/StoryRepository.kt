@@ -22,7 +22,7 @@ class StoryRepository @Inject constructor(
 ) {
     fun requestLogin(email: String, password: String): Flow<ResponseStatus<FullAuthResponse>> =
         flow {
-            emit(ResponseStatus.loading)
+            emit(ResponseStatus.Loading)
             try {
                 val loginJson = Login(email, password)
                 val res = apiService.sendLogin(loginJson)
@@ -44,7 +44,7 @@ class StoryRepository @Inject constructor(
         email: String,
         password: String
     ): Flow<ResponseStatus<BasicResponse>> = flow {
-        emit(ResponseStatus.loading)
+        emit(ResponseStatus.Loading)
         val req = Register(name, email, password)
         try {
             val res = apiService.sendRegister(req)
@@ -60,18 +60,51 @@ class StoryRepository @Inject constructor(
         }
     }
 
-    fun getAllStories(page: Int = 10, size: Int = 20): Flow<ResponseStatus<ListStoryResponse>> = flow {
+    fun getAllStories(page: Int = 10, size: Int = 20): Flow<ResponseStatus<ListStoryResponse>> =
+        flow {
+            preferences.getToken().collect {
+                if (it.isNullOrEmpty()) {
+                    Log.d(TAG, "Token Invalid")
+                    emit(ResponseStatus.TokenInvalid)
+                } else {
+                    val token = "Bearer $it"
+                    emit(ResponseStatus.Loading)
+                    try {
+                        val res = apiService.getAllStories(token, page, size)
+                        if (res.error == false) {
+                            Log.d(TAG, "data: ${res.listStory.toString()}")
+                            emit(ResponseStatus.Success(res))
+                        } else {
+                            Log.d(TAG, "Server Error, ${res.message}")
+                            emit(ResponseStatus.Error(res.message.toString()))
+                        }
+                    } catch (e: Exception) {
+                        Log.d(TAG, "Error when request register, ${e.message}")
+                        emit(ResponseStatus.Error(e.message.toString()))
+                    }
+                }
+            }
+
+        }
+
+    fun uploadStory(file: File, description: String): Flow<ResponseStatus<BasicResponse>> = flow {
         preferences.getToken().collect {
             if (it.isNullOrEmpty()) {
                 Log.d(TAG, "Token Invalid")
                 emit(ResponseStatus.TokenInvalid)
-            }else{
+            } else {
                 val token = "Bearer $it"
-                emit(ResponseStatus.loading)
+                emit(ResponseStatus.Loading)
                 try {
-                    val res = apiService.getAllStories(token, page, size)
+                    val desc = description.toRequestBody("text/plain".toMediaType())
+                    val requestMediaFile = file.asRequestBody("image/jpeg".toMediaType())
+                    val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+                        "photo",
+                        file.name,
+                        requestMediaFile
+                    )
+                    val res = apiService.sendStory(token, desc, imageMultipart)
                     if (res.error == false) {
-                        Log.d(TAG, "data: ${res.listStory.toString()}")
                         emit(ResponseStatus.Success(res))
                     } else {
                         Log.d(TAG, "Server Error, ${res.message}")
@@ -83,36 +116,9 @@ class StoryRepository @Inject constructor(
                 }
             }
         }
-
-    }
-
-    fun uploadStory(file: File, description: String): Flow<ResponseStatus<BasicResponse>> = flow {
-        preferences.getToken().collect {
-            val token = "Bearer $it"
-            emit(ResponseStatus.loading)
-            try {
-                val desc = description.toRequestBody("text/plain".toMediaType())
-                val requestMediaFile = file.asRequestBody("image/jpeg".toMediaType())
-                val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
-                    "photo",
-                    file.name,
-                    requestMediaFile
-                )
-                val res = apiService.sendStory(token, desc, imageMultipart)
-                if (res.error == false) {
-                    emit(ResponseStatus.Success(res))
-                } else {
-                    Log.d(TAG, "Server Error, ${res.message}")
-                    emit(ResponseStatus.Error(res.message.toString()))
-                }
-            } catch (e: Exception) {
-                Log.d(TAG, "Error when request register, ${e.message}")
-                emit(ResponseStatus.Error(e.message.toString()))
-            }
-        }
     }
 
     companion object {
-        val TAG = "StoryRepository"
+        val TAG = this::class.java.simpleName
     }
 }

@@ -20,12 +20,12 @@ class AuthViewModel @Inject constructor(
     private val repository: StoryRepository,
     private val preferences: AppPreferences
 ) : ViewModel() {
-    private val _loginStatus = MutableStateFlow<ResponseStatus<FullAuthResponse>>(ResponseStatus.init)
+    private val _loginStatus = MutableStateFlow<ResponseStatus<FullAuthResponse>>(ResponseStatus.Init)
     val loginStatus = _loginStatus.asStateFlow()
     private val _registerResponse =
-        MutableStateFlow<ResponseStatus<BasicResponse>>(ResponseStatus.init)
+        MutableStateFlow<ResponseStatus<BasicResponse>>(ResponseStatus.Init)
     val registerResponse = _registerResponse.asStateFlow()
-    private val _tokenStatus = MutableStateFlow<ResponseStatus<ListStoryResponse>>(ResponseStatus.loading)
+    private val _tokenStatus = MutableStateFlow<ResponseStatus<ListStoryResponse>>(ResponseStatus.Loading)
     val tokenStatus = _tokenStatus.asStateFlow()
 
     init {
