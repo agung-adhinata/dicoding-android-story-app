@@ -60,7 +60,7 @@ class StoryRepository @Inject constructor(
         }
     }
 
-    fun getAllStories(page: Int = 10, size: Int = 20): Flow<ResponseStatus<ListStoryResponse>> =
+    fun getAllStories(page: Int = 1, size: Int = 5): Flow<ResponseStatus<ListStoryResponse>> =
         flow {
             preferences.getToken().collect {
                 if (it.isNullOrEmpty()) {
