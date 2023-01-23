@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-    lateinit var binding: ActivityLoginBinding
+    private lateinit var binding: ActivityLoginBinding
     private val viewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,11 +67,6 @@ class LoginActivity : AppCompatActivity() {
             is ResponseStatus.Error -> {
                 showLoading(false)
                 Toast.makeText(this, "Error: ${status.error}", Toast.LENGTH_SHORT).show()
-            }
-            is ResponseStatus.Success -> {
-                showLoading(false)
-                val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                startActivity(intent)
             }
             else -> showLoading(false)
         }
