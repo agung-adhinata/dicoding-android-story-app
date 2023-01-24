@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class AppPreferences constructor(private val dataStore: DataStore<Preferences>) {
@@ -24,6 +25,9 @@ class AppPreferences constructor(private val dataStore: DataStore<Preferences>) 
         return dataStore.data.map {
             it[TOKEN_KEY]
         }
+    }
+    suspend fun getTokenRaw(): String? {
+        return dataStore.data.first()[TOKEN_KEY]
     }
     companion object {
         val TOKEN_KEY = stringPreferencesKey("auth_token_key")

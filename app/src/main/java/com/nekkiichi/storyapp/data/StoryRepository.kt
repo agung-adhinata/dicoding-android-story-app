@@ -1,11 +1,18 @@
 package com.nekkiichi.storyapp.data
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
+import com.nekkiichi.storyapp.adapter.StoryListPagingSource
 import com.nekkiichi.storyapp.data.remote.request.Login
 import com.nekkiichi.storyapp.data.remote.request.Register
 import com.nekkiichi.storyapp.data.remote.response.BasicResponse
 import com.nekkiichi.storyapp.data.remote.response.FullAuthResponse
 import com.nekkiichi.storyapp.data.remote.response.ListStoryResponse
+import com.nekkiichi.storyapp.data.remote.response.StoryItem
 import com.nekkiichi.storyapp.data.remote.services.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -84,8 +91,17 @@ class StoryRepository @Inject constructor(
                     }
                 }
             }
-
         }
+    fun getAllStoriesPager(): LiveData<PagingData<StoryItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            pagingSourceFactory = {
+                StoryListPagingSource(apiService, preferences)
+            }
+        ).liveData
+    }
 
     fun uploadStory(file: File, description: String): Flow<ResponseStatus<BasicResponse>> = flow {
         preferences.getToken().collect {
