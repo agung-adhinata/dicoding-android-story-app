@@ -40,6 +40,7 @@ interface ApiService {
     suspend fun getAllStories(
         @Header("Authorization") tokenWithBeaver: String,
         @Query("page") page: Int,
-        @Query("size") size: Int
+        @Query("size") size: Int,
+        @Query("location") loc: Int
     ): ListStoryResponse
 }
