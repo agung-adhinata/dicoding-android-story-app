@@ -5,12 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.recyclerview.widget.DiffUtil
+import com.nekkiichi.storyapp.adapter.StoryListAdapter
 import com.nekkiichi.storyapp.data.AppPreferences
 import com.nekkiichi.storyapp.data.ResponseStatus
 import com.nekkiichi.storyapp.data.StoryRepository
 import com.nekkiichi.storyapp.data.remote.response.ListStoryResponse
 import com.nekkiichi.storyapp.data.remote.response.StoryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +24,8 @@ class HomeViewModel @Inject constructor(private val repository: StoryRepository,
     private val _storyLists = MutableStateFlow<ResponseStatus<ListStoryResponse>>(ResponseStatus.Loading)
     val storyList = _storyLists.asStateFlow()
     val prevStoryList = MutableStateFlow<ListStoryResponse?>(null)
-    val stories :LiveData<PagingData<StoryItem>> = repository.getAllStoriesPager().cachedIn(viewModelScope)
+    val stories : LiveData<PagingData<StoryItem>> = repository.getAllStoriesPager().cachedIn(viewModelScope)
+
     fun getALlStories() {
         viewModelScope.launch {
             repository.getAllStories().collect {
@@ -35,4 +39,5 @@ class HomeViewModel @Inject constructor(private val repository: StoryRepository,
             getALlStories()
         }
     }
+
 }
