@@ -57,7 +57,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent,optionsCompat.toBundle())
         }
         binding.btnLogin.setOnClickListener {
-            //TODO: Add Loading State and intent listener to main app
             viewModel.logIn(binding.edLoginEmail.text.toString(), binding.edLoginPassword.text.toString())
         }
     }
@@ -66,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
             is ResponseStatus.Loading -> showLoading(true)
             is ResponseStatus.Error -> {
                 showLoading(false)
-                Toast.makeText(this, "Error: ${status.error}", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "Error: ${status.error}", Toast.LENGTH_SHORT).show()
             }
             else -> showLoading(false)
         }
@@ -82,10 +81,6 @@ class LoginActivity : AppCompatActivity() {
                 Log.d(TAG, "token valid")
                 val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                 startActivity(intent)
-            }
-            is ResponseStatus.TokenInvalid -> {
-                showLoading(false)
-                Toast.makeText(this, "Error: session invalid", Toast.LENGTH_SHORT).show()
             }
             else -> {
                 showLoading(false)
