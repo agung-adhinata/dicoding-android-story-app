@@ -1,11 +1,12 @@
-package com.nekkiichi.storyapp.adapter
+package com.nekkiichi.storyapp.data
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.nekkiichi.storyapp.data.AppPreferences
 import com.nekkiichi.storyapp.data.remote.response.StoryItem
 import com.nekkiichi.storyapp.data.remote.services.ApiService
-import javax.inject.Inject
+import retrofit2.HttpException
+import java.io.IOException
 
 
 class StoryListPagingSource (private val service: ApiService, private val preferences: AppPreferences): PagingSource<Int, StoryItem>() {
@@ -19,14 +20,25 @@ class StoryListPagingSource (private val service: ApiService, private val prefer
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, StoryItem> {
         val pageIndex = params.key ?: INITIAL_PAGE_INDEX
         return try {
-            val token = preferences.getTokenRaw()
-            val responseData = service.getAllStories("Bearer ${token}", pageIndex,5)
-            val listData = responseData.listStory as List<StoryItem>
+            val token = preferences.getTokenRaw() ?: throw ArithmeticException()
+            val responseData = service.getAllStories("Bearer ${token}", pageIndex, 5,0)
+            val listData: List<StoryItem> = responseData.listStory!!
+            Log.d(TAG, "data fetched, ${listData[0]}")
             LoadResult.Page(
                 data = listData,
                 prevKey = if (pageIndex == INITIAL_PAGE_INDEX) null else pageIndex - 1,
                 nextKey = if (responseData.listStory.isNullOrEmpty()) null else pageIndex + 1
             )
+
+        }catch (e: IOException) {
+            Log.d(TAG, "Error Connection")
+            return LoadResult.Error(e)
+        }catch (e: HttpException) {
+            Log.d(TAG, "Error Http Error")
+            return LoadResult.Error(e)
+        }catch (e: ArithmeticException) {
+            Log.d(TAG, "Error Token")
+            return LoadResult.Error(e)
         }catch (e: Exception) {
             return LoadResult.Error(e)
         }

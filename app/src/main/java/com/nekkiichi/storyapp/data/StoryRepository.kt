@@ -6,7 +6,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.liveData
-import com.nekkiichi.storyapp.adapter.StoryListPagingSource
 import com.nekkiichi.storyapp.data.remote.request.Login
 import com.nekkiichi.storyapp.data.remote.request.Register
 import com.nekkiichi.storyapp.data.remote.response.BasicResponse
@@ -67,6 +66,31 @@ class StoryRepository @Inject constructor(
         }
     }
 
+    fun getAllStoriesWithLocation(page: Int = 1, size: Int = 5):Flow<ResponseStatus<ListStoryResponse>> = flow {
+        preferences.getToken().collect {
+            if (it.isNullOrEmpty()) {
+                Log.d(TAG, "Token Invalid")
+                emit(ResponseStatus.TokenInvalid)
+            } else {
+                val token = "Bearer $it"
+                emit(ResponseStatus.Loading)
+                try {
+                    val res = apiService.getAllStories(token, page, size, 1)
+                    if (res.error == false) {
+                        Log.d(TAG, "data: ${res.listStory.toString()}")
+                        emit(ResponseStatus.Success(res))
+                    } else {
+                        Log.d(TAG, "Server Error, ${res.message}")
+                        emit(ResponseStatus.Error(res.message.toString()))
+                    }
+                } catch (e: Exception) {
+                    Log.d(TAG, "Error when request register, ${e.message}")
+                    emit(ResponseStatus.Error(e.message.toString()))
+                }
+            }
+        }
+    }
+
     fun getAllStories(page: Int = 1, size: Int = 5): Flow<ResponseStatus<ListStoryResponse>> =
         flow {
             preferences.getToken().collect {
@@ -77,7 +101,7 @@ class StoryRepository @Inject constructor(
                     val token = "Bearer $it"
                     emit(ResponseStatus.Loading)
                     try {
-                        val res = apiService.getAllStories(token, page, size)
+                        val res = apiService.getAllStories(token, page, size, 0)
                         if (res.error == false) {
                             Log.d(TAG, "data: ${res.listStory.toString()}")
                             emit(ResponseStatus.Success(res))
@@ -93,9 +117,10 @@ class StoryRepository @Inject constructor(
             }
         }
     fun getAllStoriesPager(): LiveData<PagingData<StoryItem>> {
+        Log.d(TAG,"getting data from pager")
         return Pager(
             config = PagingConfig(
-                pageSize = 5
+                pageSize = 10
             ),
             pagingSourceFactory = {
                 StoryListPagingSource(apiService, preferences)
