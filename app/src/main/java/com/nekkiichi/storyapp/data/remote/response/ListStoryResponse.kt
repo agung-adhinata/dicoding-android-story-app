@@ -17,4 +17,6 @@ data class StoryItem (
     @SerializedName("description") var description: String,
     @SerializedName("photoUrl") var photoUrl: String,
     @SerializedName("createdAt") var createdAt: String,
+    @SerializedName("lat") var lat: Double? = null,
+    @SerializedName("lon") var lon: Double? = null
         ):Parcelable

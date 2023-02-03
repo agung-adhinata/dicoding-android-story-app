@@ -66,7 +66,7 @@ class StoryRepository @Inject constructor(
         }
     }
 
-    fun getAllStoriesWithLocation(page: Int = 1, size: Int = 5):Flow<ResponseStatus<ListStoryResponse>> = flow {
+    fun getAllStoriesWithLocation(page: Int = 1, size: Int = 10):Flow<ResponseStatus<ListStoryResponse>> = flow {
         preferences.getToken().collect {
             if (it.isNullOrEmpty()) {
                 Log.d(TAG, "Token Invalid")

@@ -3,6 +3,9 @@ package com.nekkiichi.storyapp.ui.view.homeMaps
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -11,7 +14,11 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.nekkiichi.storyapp.R
+import com.nekkiichi.storyapp.data.ResponseStatus
+import com.nekkiichi.storyapp.data.remote.response.ListStoryResponse
 import com.nekkiichi.storyapp.databinding.ActivityHomeMapsBinding
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class HomeMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -47,10 +54,40 @@ class HomeMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.uiSettings.isCompassEnabled = true
         mMap.uiSettings.isMapToolbarEnabled = true
 
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.stories.collect {
+                        collectStoryList(it)
+                    }
+                }
+            }
+        }
+
 
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val indonesia = LatLng(0.7893, 113.9213)
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(indonesia))
+    }
+
+    private fun collectStoryList(data: ResponseStatus<ListStoryResponse>) {
+        when(data) {
+            is ResponseStatus.Loading ->{}
+            is ResponseStatus.Success -> {
+                val storyLists = data.data.listStory
+                if (storyLists != null) {
+                    // add story marker from story lists
+                    for (item in storyLists) {
+                        val latLng = LatLng(
+                            item.lat?:continue,
+                            item.lon?:continue
+                        )
+                        val pin = MarkerOptions().position(latLng).title(item.name).snippet(item.description)
+                        mMap.addMarker(pin)
+                    }
+                }
+            }
+            else -> {}
+        }
     }
 }
