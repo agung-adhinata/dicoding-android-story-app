@@ -15,6 +15,7 @@ import com.nekkiichi.storyapp.adapter.StoryListAdapter
 import com.nekkiichi.storyapp.databinding.ActivityHomeBinding
 import com.nekkiichi.storyapp.ui.view.addStory.AddStoryActivity
 import com.nekkiichi.storyapp.ui.view.auth.LoginActivity
+import com.nekkiichi.storyapp.ui.view.homeMaps.HomeMapsActivity
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.HttpException
 import java.io.IOException
@@ -72,6 +73,10 @@ class HomeActivity : AppCompatActivity() {
                 viewModel.logOut()
                 startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
                 finish()
+                true
+            }
+            R.id.action_open_map -> {
+                startActivity(Intent(this@HomeActivity, HomeMapsActivity::class.java))
                 true
             }
             else -> false
