@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeMapsViewModel @Inject constructor(private val repository: StoryRepository):ViewModel() {
     private val _stories = MutableStateFlow<ResponseStatus<ListStoryResponse>>(ResponseStatus.Loading)
-    val stories = _stories.asStateFlow()
+    val stories = _stories.asLiveData()
     init {
         getStories()
     }

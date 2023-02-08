@@ -82,6 +82,11 @@ class LoginActivity : AppCompatActivity() {
                 val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                 startActivity(intent)
             }
+            is ResponseStatus.Error -> {
+                showLoading(false)
+                Log.i(TAG,"error ${data.error}")
+                Toast.makeText(this, "error ${data.error}", Toast.LENGTH_SHORT).show()
+            }
             else -> {
                 showLoading(false)
                 Log.d(TAG, "token invalid, enable login activity")
