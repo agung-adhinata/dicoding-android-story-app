@@ -7,16 +7,20 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.nekkiichi.storyapp.R
+import com.nekkiichi.storyapp.adapter.LoadingStateAdapter
 import com.nekkiichi.storyapp.adapter.StoryListAdapter
 import com.nekkiichi.storyapp.databinding.ActivityHomeBinding
 import com.nekkiichi.storyapp.ui.view.addStory.AddStoryActivity
 import com.nekkiichi.storyapp.ui.view.auth.LoginActivity
 import com.nekkiichi.storyapp.ui.view.homeMaps.HomeMapsActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -34,6 +38,8 @@ class HomeActivity : AppCompatActivity() {
 
         pagingDataAdapter = StoryListAdapter(StoryListAdapter.StoryComparator)
         updateRecycleView()
+
+
         pagingDataAdapter.addLoadStateListener { loadState ->
             val errorState = when {
                 loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
@@ -51,9 +57,13 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         }
+
+
         //setup observer
-        viewModel.stories.observe(this) {
-            pagingDataAdapter.submitData(lifecycle, it)
+        lifecycleScope.launchWhenCreated {
+            viewModel.stories.collectLatest {
+                pagingDataAdapter.submitData(lifecycle, it)
+            }
         }
         //setup listener
         binding.btnAdd.setOnClickListener {
@@ -91,7 +101,11 @@ class HomeActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         binding.rvStoryList.layoutManager = layoutManager
         val dividerItemDecoration = DividerItemDecoration(this, layoutManager.orientation)
-        binding.rvStoryList.adapter = pagingDataAdapter
+        binding.rvStoryList.adapter = pagingDataAdapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                pagingDataAdapter.retry()
+            }
+        )
         binding.rvStoryList.addItemDecoration(dividerItemDecoration)
     }
 

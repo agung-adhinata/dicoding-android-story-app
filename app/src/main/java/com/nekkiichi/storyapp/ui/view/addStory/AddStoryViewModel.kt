@@ -1,5 +1,6 @@
 package com.nekkiichi.storyapp.ui.view.addStory
 
+import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nekkiichi.storyapp.data.AppPreferences
@@ -17,10 +18,13 @@ import javax.inject.Inject
 class AddStoryViewModel @Inject constructor(private val repository: StoryRepository, private val preferences: AppPreferences): ViewModel() {
     private var _status = MutableStateFlow<ResponseStatus<BasicResponse>>(ResponseStatus.Init)
     val status = _status.asStateFlow()
+    var location: Location? = null
     fun uploadImage(file: File, description: String) {
-        viewModelScope.launch {
-            repository.uploadStory(file,description).collect {
-                _status.value = it
+        if(location == null) {
+            viewModelScope.launch {
+                repository.uploadStory(file,description).collect {
+                    _status.value = it
+                }
             }
         }
     }

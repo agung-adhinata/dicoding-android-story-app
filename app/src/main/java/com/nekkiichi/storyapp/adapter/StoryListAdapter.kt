@@ -56,11 +56,9 @@ class StoryListAdapter(diffCallback: DiffUtil.ItemCallback<StoryItem>) :
         if(dataItem!= null) holder.bind(dataItem)
     }
     object StoryComparator: DiffUtil.ItemCallback<StoryItem>() {
-        override fun areItemsTheSame(oldItem: StoryItem, newItem: StoryItem): Boolean {
-            return oldItem.id == newItem.id
-        }
-        override fun areContentsTheSame(oldItem: StoryItem, newItem: StoryItem): Boolean {
-            return oldItem == newItem
-        }
+        override fun areItemsTheSame(oldItem: StoryItem, newItem: StoryItem)= oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: StoryItem, newItem: StoryItem) = oldItem == newItem
+
     }
 }

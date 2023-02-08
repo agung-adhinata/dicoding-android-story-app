@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -18,6 +19,8 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.nekkiichi.storyapp.data.ResponseStatus
 import com.nekkiichi.storyapp.data.remote.response.BasicResponse
 import com.nekkiichi.storyapp.databinding.ActivityAddStoryBinding
@@ -29,10 +32,9 @@ import java.io.File
 
 @AndroidEntryPoint
 class AddStoryActivity : AppCompatActivity() {
-    class AddStoryActivity : AppCompatActivity() {
         private lateinit var binding: ActivityAddStoryBinding
-        private val viewModel: AddStoryViewModel by viewModels()
         private lateinit var currentPhotoPath: String
+        private val viewModel: AddStoryViewModel by viewModels()
         private var getFile: File? = null
         private val launcherIntentCamera = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -59,6 +61,7 @@ class AddStoryActivity : AppCompatActivity() {
             //setup binding
             binding = ActivityAddStoryBinding.inflate(layoutInflater)
             setContentView(binding.root)
+
             //setup permission
             if (!allPermissionsGranted()) {
                 ActivityCompat.requestPermissions(
@@ -67,7 +70,10 @@ class AddStoryActivity : AppCompatActivity() {
                     REQUEST_CODE_PERMISSIONS
                 )
             }
+
+            // ===
             title = "Add new Story"
+
             // setup lifecycle
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -171,5 +177,5 @@ class AddStoryActivity : AppCompatActivity() {
             private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
             private const val REQUEST_CODE_PERMISSIONS = 10
         }
-    }
+
 }

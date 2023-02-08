@@ -21,22 +21,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: StoryRepository, private val preferences: AppPreferences):ViewModel() {
-    private val _storyLists = MutableStateFlow<ResponseStatus<ListStoryResponse>>(ResponseStatus.Loading)
-    val storyList = _storyLists.asStateFlow()
-    val prevStoryList = MutableStateFlow<ListStoryResponse?>(null)
-    val stories : LiveData<PagingData<StoryItem>> = repository.getAllStoriesPager().cachedIn(viewModelScope)
+    val stories : Flow<PagingData<StoryItem>> = repository.getAllStoriesPager().cachedIn(viewModelScope)
 
-    fun getALlStories() {
-        viewModelScope.launch {
-            repository.getAllStories().collect {
-                _storyLists.value = it
-            }
-        }
-    }
     fun logOut() {
         viewModelScope.launch {
             preferences.clearSession()
-            getALlStories()
         }
     }
 

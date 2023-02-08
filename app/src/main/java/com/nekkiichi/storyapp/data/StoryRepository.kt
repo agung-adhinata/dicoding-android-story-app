@@ -1,5 +1,6 @@
 package com.nekkiichi.storyapp.data
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.Pager
@@ -66,7 +67,7 @@ class StoryRepository @Inject constructor(
         }
     }
 
-    fun getAllStoriesWithLocation(page: Int = 1, size: Int = 10):Flow<ResponseStatus<ListStoryResponse>> = flow {
+    fun getAllStoriesWithLocation(page: Int = 1, size: Int = 20):Flow<ResponseStatus<ListStoryResponse>> = flow {
         preferences.getToken().collect {
             if (it.isNullOrEmpty()) {
                 Log.d(TAG, "Token Invalid")
@@ -116,7 +117,7 @@ class StoryRepository @Inject constructor(
                 }
             }
         }
-    fun getAllStoriesPager(): LiveData<PagingData<StoryItem>> {
+    fun getAllStoriesPager(): Flow<PagingData<StoryItem>> {
         Log.d(TAG,"getting data from pager")
         return Pager(
             config = PagingConfig(
@@ -125,7 +126,7 @@ class StoryRepository @Inject constructor(
             pagingSourceFactory = {
                 StoryListPagingSource(apiService, preferences)
             }
-        ).liveData
+        ).flow
     }
 
     fun uploadStory(file: File, description: String): Flow<ResponseStatus<BasicResponse>> = flow {
@@ -137,14 +138,17 @@ class StoryRepository @Inject constructor(
                 val token = "Bearer $it"
                 emit(ResponseStatus.Loading)
                 try {
-                    val desc = description.toRequestBody("text/plain".toMediaType())
                     val requestMediaFile = file.asRequestBody("image/jpeg".toMediaType())
                     val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
                         "photo",
                         file.name,
                         requestMediaFile
                     )
+                    val desc = description.toRequestBody("text/plain".toMediaType())
+
                     val res = apiService.sendStory(token, desc, imageMultipart)
+
+                    //err check
                     if (res.error == false) {
                         emit(ResponseStatus.Success(res))
                     } else {
