@@ -2,32 +2,25 @@ package com.nekkiichi.storyapp.ui.view.homeMaps
 
 import android.Manifest
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.google.android.gms.location.FusedLocationProviderClient
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.nekkiichi.storyapp.R
 import com.nekkiichi.storyapp.data.ResponseStatus
 import com.nekkiichi.storyapp.data.remote.response.ListStoryResponse
 import com.nekkiichi.storyapp.databinding.ActivityHomeMapsBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeMapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -43,34 +36,28 @@ class HomeMapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     //accurate location access, granted
                     getMyLastLocation()
                 }
+
                 permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
                     getMyLastLocation()
                 }
             }
         }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityHomeMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        title = resources.getString(R.string.maps_title)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -78,17 +65,20 @@ class HomeMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.uiSettings.isCompassEnabled = true
         mMap.uiSettings.isMapToolbarEnabled = true
 
+        val success =  mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json))
+        if(!success) {
+            Log.d(TAG, "failed load map style")
+        }
         getMyLastLocation()
 
         viewModel.stories.observe(this) {
             collectStoryList(it)
         }
 
-
-        // Add a marker in Sydney and move the camera
         val indonesia = LatLng(0.7893, 113.9213)
         mMap.animateCamera(CameraUpdateFactory.newLatLng(indonesia))
     }
+
     private fun getMyLastLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -104,15 +94,8 @@ class HomeMapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 )
             )
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return
-        }else {
+        } else {
             mMap.isMyLocationEnabled = true
 
         }
@@ -144,12 +127,16 @@ class HomeMapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when( item.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 finish()
                 true
             }
             else -> false
         }
+    }
+
+    companion object {
+        val TAG = this::class.java.simpleName
     }
 }

@@ -1,6 +1,5 @@
 package com.nekkiichi.storyapp.data
 
-import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.Pager
@@ -117,7 +116,7 @@ class StoryRepository @Inject constructor(
                 }
             }
         }
-    fun getAllStoriesPager(): Flow<PagingData<StoryItem>> {
+    fun getAllStoriesPager(): LiveData<PagingData<StoryItem>> {
         Log.d(TAG,"getting data from pager")
         return Pager(
             config = PagingConfig(
@@ -126,7 +125,7 @@ class StoryRepository @Inject constructor(
             pagingSourceFactory = {
                 StoryListPagingSource(apiService, preferences)
             }
-        ).flow
+        ).liveData
     }
 
     fun uploadStory(file: File, description: String): Flow<ResponseStatus<BasicResponse>> = flow {

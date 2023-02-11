@@ -1,15 +1,13 @@
-package com.nekkiichi.storyapp.data
+package com.nekkiichi.storyapp.utils
 
 import com.nekkiichi.storyapp.data.remote.response.ListStoryResponse
 import com.nekkiichi.storyapp.data.remote.response.StoryItem
-import java.time.Instant
-import java.util.Date
 
 object DataDummy {
     fun generateDummyStoryList(): ListStoryResponse {
         val storyList = ArrayList<StoryItem>()
         for (i in 1..10) {
-            val story: StoryItem = StoryItem(
+            val story = StoryItem(
                 id = "2391",
                 name = "stori $i",
                 description = "simple story ${i*2}",

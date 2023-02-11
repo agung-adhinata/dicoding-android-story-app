@@ -1,19 +1,14 @@
 package com.nekkiichi.storyapp.adapter
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.util.Pair
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.nekkiichi.storyapp.R
 import com.nekkiichi.storyapp.data.remote.response.StoryItem
 import com.nekkiichi.storyapp.databinding.ItemStorylistBinding
 import com.nekkiichi.storyapp.ui.view.home.DetailActivity

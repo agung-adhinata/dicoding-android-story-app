@@ -7,11 +7,9 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.nekkiichi.storyapp.R
 import com.nekkiichi.storyapp.adapter.LoadingStateAdapter
 import com.nekkiichi.storyapp.adapter.StoryListAdapter
@@ -20,7 +18,6 @@ import com.nekkiichi.storyapp.ui.view.addStory.AddStoryActivity
 import com.nekkiichi.storyapp.ui.view.auth.LoginActivity
 import com.nekkiichi.storyapp.ui.view.homeMaps.HomeMapsActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -60,11 +57,10 @@ class HomeActivity : AppCompatActivity() {
 
 
         //setup observer
-        lifecycleScope.launchWhenCreated {
-            viewModel.stories.collectLatest {
-                pagingDataAdapter.submitData(lifecycle, it)
-            }
+        viewModel.stories.observe(this) {
+            pagingDataAdapter.submitData(lifecycle, it)
         }
+
         //setup listener
         binding.btnAdd.setOnClickListener {
             val intent = Intent(this@HomeActivity, AddStoryActivity::class.java)
