@@ -13,6 +13,7 @@ import com.nekkiichi.storyapp.data.remote.response.FullAuthResponse
 import com.nekkiichi.storyapp.data.remote.response.ListStoryResponse
 import com.nekkiichi.storyapp.data.remote.response.StoryItem
 import com.nekkiichi.storyapp.data.remote.services.ApiService
+import com.nekkiichi.storyapp.utils.reduceFileImg
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaType
@@ -137,7 +138,8 @@ class StoryRepository @Inject constructor(
                 val token = "Bearer $it"
                 emit(ResponseStatus.Loading)
                 try {
-                    val requestMediaFile = file.asRequestBody("image/jpeg".toMediaType())
+                    val compressedImg = reduceFileImg(file)
+                    val requestMediaFile = compressedImg.asRequestBody("image/jpeg".toMediaType())
                     val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
                         "photo",
                         file.name,

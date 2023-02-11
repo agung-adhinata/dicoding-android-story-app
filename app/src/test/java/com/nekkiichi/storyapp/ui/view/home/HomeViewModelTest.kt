@@ -39,10 +39,10 @@ class HomeViewModelTest {
     @Mock private lateinit var storyRepository: StoryRepository
     @Mock private lateinit var preferences: AppPreferences
 
-    private val dummyStoriesResponse = DataDummy.generateDummyStoryList().listStory!!
 
     @Test
     fun `stories shouldn't null and return success`() = runTest {
+        val dummyStoriesResponse = DataDummy.generateDummyStoryList().listStory!!
         val data = StoryListPagingSource.snapshot(dummyStoriesResponse)
         val expectedData = MutableLiveData<PagingData<StoryItem>>()
         expectedData.value = data
@@ -62,7 +62,33 @@ class HomeViewModelTest {
         Assert.assertNotNull(diffs.snapshot())
         Assert.assertEquals(dummyStoriesResponse, diffs.snapshot())
         Assert.assertEquals(dummyStoriesResponse.size, diffs.snapshot().size)
-        Assert.assertEquals(dummyStoriesResponse[0].id, diffs.snapshot()[0]?.id)
+        Assert.assertEquals(dummyStoriesResponse[0], diffs.snapshot()[0])
+    }
+
+    @Test
+    fun `stories should receive non null empty when there's no story received`() = runTest {
+
+        val dummyData = emptyList<StoryItem>()
+        val data = StoryListPagingSource.snapshot(dummyData)
+        val expectedData = MutableLiveData<PagingData<StoryItem>>()
+        expectedData.value = data
+
+        Mockito.`when`(storyRepository.getAllStoriesPager()).thenReturn(expectedData)
+        val homeViewModel = HomeViewModel(storyRepository, preferences)
+
+        val actualStories = homeViewModel.stories.getOrAwaitValue()
+
+        val diffs = AsyncPagingDataDiffer(
+            diffCallback = StoryListAdapter.StoryComparator,
+            updateCallback = listUpdateCallback,
+            workerDispatcher = Dispatchers.Main
+        )
+        diffs.submitData(actualStories)
+
+        Assert.assertNotNull(diffs.snapshot())
+
+        Assert.assertEquals(0,diffs.snapshot().size)
+
     }
 }
 

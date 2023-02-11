@@ -21,7 +21,7 @@ class StoryListPagingSource (private val service: ApiService, private val prefer
         return try {
             val token = preferences.getTokenRaw() ?: throw ArithmeticException()
             val responseData = service.getAllStories("Bearer $token", pageIndex, 10,0)
-            val listData: List<StoryItem> = responseData.listStory!!
+            val listData: List<StoryItem> = responseData.listStory ?: listOf()
             Log.d(TAG, "data fetched, ${listData[0]}")
             LoadResult.Page(
                 data = listData,

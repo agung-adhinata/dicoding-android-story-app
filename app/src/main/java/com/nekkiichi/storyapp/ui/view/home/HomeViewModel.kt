@@ -20,5 +20,4 @@ class HomeViewModel @Inject constructor(private val repository: StoryRepository,
             preferences.clearSession()
         }
     }
-
 }

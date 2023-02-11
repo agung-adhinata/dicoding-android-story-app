@@ -35,16 +35,6 @@ interface ApiService {
         @Part photo: MultipartBody.Part,
     ): BasicResponse
 
-    @Multipart
-    @POST("stories")
-    suspend fun sendStoryWithLocation(
-        @Header("Authorization") tokenWithBeaver: String,
-        @Part("description") description: RequestBody,
-        @Part("lat") lat: RequestBody,
-        @Part("lon") lon: RequestBody,
-        @Part photo: MultipartBody.Part,
-    ): BasicResponse
-
     @GET("stories")
     suspend fun getAllStories(
         @Header("Authorization") tokenWithBeaver: String,

@@ -2,8 +2,11 @@ package com.nekkiichi.storyapp.utils
 
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -11,6 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 private const val FILENAME_FORMAT = "dd-MMM-yyyy"
+private const val ONE_MEGABYTE = 1000000
 
 val timeStamp: String = SimpleDateFormat(
     FILENAME_FORMAT,
@@ -35,4 +39,22 @@ fun uriToFile(image: Uri, context: Context): File {
     outputStream.close()
     inputStream.close()
     return myFile
+}
+
+fun reduceFileImg(file: File) :File {
+    val bitmap = BitmapFactory.decodeFile(file.path)
+    var compressQuality = 100
+
+    // equals to file size in Byte
+    var streamLength:Int
+
+    do {
+        val bmpStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, bmpStream)
+        val bmpPicByteArray = bmpStream.toByteArray()
+        streamLength = bmpPicByteArray.size
+        compressQuality -= 5
+    } while (streamLength > ONE_MEGABYTE)
+    bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
+    return file
 }

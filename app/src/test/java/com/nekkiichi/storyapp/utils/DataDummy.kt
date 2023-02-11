@@ -21,6 +21,12 @@ object DataDummy {
             message = null,
             listStory = storyList
         )
-
+    }
+    fun generateEmptyStoryList(): ListStoryResponse {
+        return ListStoryResponse(
+            error = false,
+            message = null,
+            listStory = listOf()
+        )
     }
 }
